@@ -1,0 +1,57 @@
+#include <cuda.h>
+#include "cuda_runtime.h"
+#include "device_launch_parameters.h"
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <sstream>
+
+using namespace std;
+
+__global__ void get_squares(const int* data, const size_t* count, int* result)
+{
+    for (int i = 0; i < *count; i++)
+    {
+        result[i] = data[i] * data[i];
+    }
+}
+
+int main()
+{
+    const size_t array_size = 100;
+
+    int* numbers = new int[array_size];
+    int* result = new int[array_size];
+
+    for (int i = 0; i < array_size; i++)
+    {
+        numbers[i] = i;
+    }
+
+    int* device_numbers, * device_result;
+    size_t* device_count;
+
+    cudaMalloc(&device_numbers, array_size * sizeof(int));
+    cudaMalloc(&device_count, sizeof(size_t));
+    cudaMalloc(&device_result, array_size * sizeof(int));
+
+    cudaMemcpy(device_numbers, numbers, array_size * sizeof(int), cudaMemcpyHostToDevice); 
+    cudaMemcpy(device_count, &array_size, sizeof(size_t), cudaMemcpyHostToDevice);
+
+    get_squares <<< 1, 10 >>> (device_numbers, device_count, device_result);
+
+    cudaMemcpy(&result, device_result, array_size * sizeof(int), cudaMemcpyDeviceToHost);
+
+    for (int i = 0; i < array_size; i++)
+    {
+        cout << result[i] << endl;
+    }
+
+    delete[] numbers;
+    delete[] result;
+    cudaFree(device_numbers);
+    cudaFree(device_result);
+    cudaFree(device_count);
+}
+
