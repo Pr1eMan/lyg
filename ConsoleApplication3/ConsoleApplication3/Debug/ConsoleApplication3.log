@@ -1,0 +1,3 @@
+﻿  ConsoleApplication3.cpp
+C:\Users\gkoje\source\repos\ConsoleApplication3\ConsoleApplication3\ConsoleApplication3.cpp(32,19): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  ConsoleApplication3.vcxproj -> C:\Users\gkoje\source\repos\ConsoleApplication3\Debug\ConsoleApplication3.exe
